@@ -1,0 +1,12 @@
+*.pyc
+.cache
+.coverage
+.project
+.pydevproject
+.DS_Store
+.idea/
+.pytest_cache/
+build/
+htmlcov/
+env/
+dist/
