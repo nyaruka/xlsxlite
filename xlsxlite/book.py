@@ -14,7 +14,9 @@ WORKSHEET_HEADER = (
 
 
 class XLSXSheet:
-
+    """
+    A worksheet within a XLSX workbook
+    """
     def __init__(self, _id, name, path):
         self.id = _id
         self.name = name
@@ -27,6 +29,9 @@ class XLSXSheet:
         self.file.write("<sheetData>")
 
     def append_row(self, *columns):
+        """
+        Appends a new row to this sheet
+        """
         row = ET.Element("row")
 
         for column in columns:
@@ -38,12 +43,17 @@ class XLSXSheet:
         self.file.write(ET.tostring(row, encoding="unicode"))
 
     def finalize(self):
+        """
+        Finalizes this sheet so that its XML file is valid
+        """
         self.file.write("</sheetData></worksheet>")
         self.file.close()
 
 
 class XLSXBook:
-
+    """
+    An XLSX workbook
+    """
     def __init__(self):
         self.base_dir = tempfile.mkdtemp()
         self.app_dir = os.path.join(self.base_dir, "xl")
@@ -53,6 +63,9 @@ class XLSXBook:
         os.mkdir(os.path.join(self.app_dir, "worksheets"))
 
     def add_sheet(self, name):
+        """
+        Adds a new worksheet to this workbook with the given name
+        """
         _id = str(len(self.sheets) + 1)
         path = os.path.join(self.app_dir, f"worksheets/sheet{_id}.xml")
         sheet = XLSXSheet(_id, name, path)
@@ -140,11 +153,11 @@ class XLSXBook:
         for s, sheet in enumerate(self.sheets):
             ET.SubElement(sheets, "sheet", {"name": sheet.name, "sheetId": sheet.id, "r:id": sheet.relationshipId})
 
-            with open(os.path.join(self.base_dir, "xl/workbook.xml"), "w", encoding="utf-8") as f:
-                f.write(XML_HEADER)
-                f.write(WORKBOOK_HEADER)
-                f.write(ET.tostring(sheets, encoding="unicode"))
-                f.write("</workbook>")
+        with open(os.path.join(self.base_dir, "xl/workbook.xml"), "w", encoding="utf-8") as f:
+            f.write(XML_HEADER)
+            f.write(WORKBOOK_HEADER)
+            f.write(ET.tostring(sheets, encoding="unicode"))
+            f.write("</workbook>")
 
     def _archive_dir(self, to_file):
         archive = zipfile.ZipFile(to_file, "w", zipfile.ZIP_DEFLATED)
