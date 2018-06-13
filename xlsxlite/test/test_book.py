@@ -7,6 +7,7 @@ from .base import XLSXTest
 
 
 class BookTest(XLSXTest):
+
     def setUp(self):
         super().setUp()
 
@@ -42,9 +43,5 @@ class BookTest(XLSXTest):
         assert sheet1.title == "People"
         assert sheet2.title == "Empty"
 
-        self.assertExcelSheet(sheet1, [
-            ("Name", "Email"),
-            ("Jim", "jim@acme.com"),
-            ("Bob", "bob@acme.com")
-        ])
+        self.assertExcelSheet(sheet1, [("Name", "Email"), ("Jim", "jim@acme.com"), ("Bob", "bob@acme.com")])
         self.assertExcelSheet(sheet2, [()])
