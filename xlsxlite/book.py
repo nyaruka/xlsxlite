@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 XML_HEADER = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"""
 WORKBOOK_HEADER = """<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
-SHEET_HEADER = """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
+WORKSHEET_HEADER = """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
 
 
 class XLSXSheet:
@@ -19,11 +19,19 @@ class XLSXSheet:
 
         self.file = open(path, "w", encoding='utf-8')
         self.file.write(XML_HEADER)
-        self.file.write(SHEET_HEADER)
+        self.file.write(WORKSHEET_HEADER)
         self.file.write("<sheetData>")
 
-    def append_row(self, columns):
-        pass
+    def append_row(self, *columns):
+        row = ET.Element("row")
+
+        for column in columns:
+            c = ET.SubElement(row, "c", {"t": "inlineStr"})
+            s = ET.SubElement(c, "is")
+            t = ET.SubElement(s, "t")
+            t.text = column
+
+        self.file.write(ET.tostring(row, encoding="unicode"))
 
     def finalize(self):
         self.file.write("</sheetData></worksheet>")
@@ -39,11 +47,13 @@ class XLSXBook:
         os.mkdir(self.app_dir)
         os.mkdir(os.path.join(self.app_dir, "worksheets"))
 
-    def create_sheet(self, name):
+    def add_sheet(self, name):
         _id = str(len(self.sheets) + 1)
         path = os.path.join(self.app_dir, f"worksheets/sheet{_id}.xml")
+        sheet = XLSXSheet(_id, name, path)
 
-        self.sheets.append(XLSXSheet(_id, name, path))
+        self.sheets.append(sheet)
+        return sheet
 
     def _create_content_types(self):
         types = ET.Element("Types", {"xmlns": "http://schemas.openxmlformats.org/package/2006/content-types"})
@@ -112,6 +122,10 @@ class XLSXBook:
         archive.close()
 
     def finalize(self, to_file, remove_dir=True):
+        # must have at least one sheet
+        if not self.sheets:
+            self.add_sheet("Sheet1")
+
         self._create_content_types()
         self._create_root_rels()
         self._create_app_rels()
