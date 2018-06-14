@@ -12,6 +12,9 @@ WORKSHEET_HEADER = (
     """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
 )
 
+# use a nice big I/O buffer for the worksheet files
+WORKSHEET_IO_BUFFER = 1024 * 1024
+
 
 class XLSXSheet:
     """
@@ -23,7 +26,7 @@ class XLSXSheet:
         self.path = path
         self.relationshipId = f"rId{_id}"
 
-        self.file = open(path, "w", encoding="utf-8")
+        self.file = open(path, "w", encoding="utf-8", buffering=WORKSHEET_IO_BUFFER)
         self.file.write(XML_HEADER)
         self.file.write(WORKSHEET_HEADER)
         self.file.write("<sheetData>")
