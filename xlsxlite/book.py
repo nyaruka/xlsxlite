@@ -4,6 +4,7 @@ import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
 
+from datetime import datetime
 from xml.sax.saxutils import escape
 
 
@@ -50,8 +51,16 @@ class XLSXSheet:
             raise ValueError(f"sheet already has the maximum of {self.MAX_ROWS} rows")
 
         row = "<row>"
-        for column in columns:
-            row += f"<c t=\"inlineStr\"><is><t>{escape(column)}</t></is></c>"
+        for val in columns:
+            if isinstance(val, str):
+                row += f"<c t=\"inlineStr\"><is><t>{escape(val)}</t></is></c>"
+            elif isinstance(val, (int, float)):
+                row += f"<c t=\"n\"><v>{str(val)}</v></c>"
+            elif isinstance(val, datetime):
+                row += f"<c t=\"d\"><v>{val.isoformat()}</v></c>"
+            else:
+                raise ValueError(f"Unsupported type in column data: {type(val)}")
+
         row += "</row>"
 
         self.file.write(row)

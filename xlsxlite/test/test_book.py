@@ -1,10 +1,12 @@
 import os
 import pytest
+import pytz
 import random
 import shutil
 import string
 import time
 
+from datetime import datetime, timedelta
 from mock import patch
 from openpyxl.reader.excel import load_workbook
 from unittest import skip
@@ -12,17 +14,15 @@ from xlsxlite.book import XLSXBook
 from .base import XLSXTest
 
 
+@pytest.fixture(scope="module")
+def tests_dir():
+    os.mkdir("_tests")
+    yield
+    shutil.rmtree("_tests")
+
+
+@pytest.mark.usefixtures("tests_dir")
 class BookTest(XLSXTest):
-
-    def setUp(self):
-        super().setUp()
-
-        os.mkdir("_tests")
-
-    def tearDown(self):
-        super().tearDown()
-
-        shutil.rmtree("_tests")
 
     def test_empty(self):
         book = XLSXBook()
@@ -57,6 +57,22 @@ class BookTest(XLSXTest):
         self.assertExcelSheet(sheet1, [()])
         self.assertExcelSheet(sheet2, [("Name", "Email"), ("Jim", "jim@acme.com"), ("Bob", "bob@acme.com")])
         self.assertExcelSheet(sheet3, [()])
+
+    def test_cell_types(self):
+        d1 = datetime(2018, 6, 14, 11, 26, 30, 0, pytz.UTC)
+
+        book = XLSXBook()
+        sheet1 = book.add_sheet("Test")
+        sheet1.append_row("str", 3, 1.23, d1)
+
+        # try to write a cell value with an unsupported type
+        with pytest.raises(ValueError):
+            sheet1.append_row(timedelta(days=1))
+
+        book.finalize(to_file="_tests/types.xlsx")
+
+        book = load_workbook(filename="_tests/types.xlsx")
+        self.assertExcelSheet(book.worksheets[0], [("str", 3, 1.23, d1)], tz=pytz.UTC)
 
     def test_escaping(self):
         book = XLSXBook()
