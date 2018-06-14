@@ -77,7 +77,7 @@ class XLSXBook:
         os.mkdir(self.app_dir)
         os.mkdir(os.path.join(self.app_dir, "worksheets"))
 
-    def add_sheet(self, name):
+    def add_sheet(self, name, index=-1):
         """
         Adds a new worksheet to this workbook with the given name
         """
@@ -85,7 +85,10 @@ class XLSXBook:
         path = os.path.join(self.app_dir, f"worksheets/sheet{_id}.xml")
         sheet = XLSXSheet(_id, name, path)
 
-        self.sheets.append(sheet)
+        if index < 0:
+            index = len(self.sheets)
+
+        self.sheets.insert(index, sheet)
         return sheet
 
     def _create_content_types(self):
@@ -165,7 +168,7 @@ class XLSXBook:
 
     def _create_workbook(self):
         sheets = ET.Element("sheets")
-        for s, sheet in enumerate(self.sheets):
+        for sheet in self.sheets:
             ET.SubElement(sheets, "sheet", {"name": sheet.name, "sheetId": sheet.id, "r:id": sheet.relationshipId})
 
         with open(os.path.join(self.base_dir, "xl/workbook.xml"), "w", encoding="utf-8") as f:

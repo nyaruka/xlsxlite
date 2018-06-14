@@ -35,17 +35,23 @@ class BookTest(XLSXTest):
         sheet1.append_row("Bob", "bob@acme.com")
 
         book.add_sheet("Empty")
+
+        # insert a new sheet at a specific index
+        book.add_sheet("New first", index=0)
+
         book.finalize(to_file="_tests/simple.xlsx")
 
         book = load_workbook(filename="_tests/simple.xlsx")
-        assert len(book.worksheets) == 2
+        assert len(book.worksheets) == 3
 
-        sheet1, sheet2 = book.worksheets
-        assert sheet1.title == "People"
-        assert sheet2.title == "Empty"
+        sheet1, sheet2, sheet3 = book.worksheets
+        assert sheet1.title == "New first"
+        assert sheet2.title == "People"
+        assert sheet3.title == "Empty"
 
-        self.assertExcelSheet(sheet1, [("Name", "Email"), ("Jim", "jim@acme.com"), ("Bob", "bob@acme.com")])
-        self.assertExcelSheet(sheet2, [()])
+        self.assertExcelSheet(sheet1, [()])
+        self.assertExcelSheet(sheet2, [("Name", "Email"), ("Jim", "jim@acme.com"), ("Bob", "bob@acme.com")])
+        self.assertExcelSheet(sheet3, [()])
 
     def test_sheet_limits(self):
         book = XLSXBook()
