@@ -1,4 +1,5 @@
 import os
+import pytest
 import shutil
 import time
 
@@ -55,13 +56,22 @@ class BookTest(XLSXTest):
         self.assertExcelSheet(sheet2, [("Name", "Email"), ("Jim", "jim@acme.com"), ("Bob", "bob@acme.com")])
         self.assertExcelSheet(sheet3, [()])
 
+    def test_escaping(self):
+        book = XLSXBook()
+        sheet1 = book.add_sheet("Test")
+        sheet1.append_row("< & > \" ! =")
+        book.finalize(to_file="_tests/escaped.xlsx")
+
+        book = load_workbook(filename="_tests/escaped.xlsx")
+        self.assertExcelSheet(book.worksheets[0], [("< & > \" ! =",)])
+
     def test_sheet_limits(self):
         book = XLSXBook()
         sheet1 = book.add_sheet("Sheet1")
 
         # try to add row with too many columns
         column = ['x'] * 20000
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             sheet1.append_row(*column)
 
         # try to add more rows than allowed
@@ -70,7 +80,7 @@ class BookTest(XLSXTest):
             sheet1.append_row('x')
             sheet1.append_row('x')
 
-            with self.assertRaises(ValueError):
+            with pytest.raises(ValueError):
                 sheet1.append_row('x')
 
     @skip

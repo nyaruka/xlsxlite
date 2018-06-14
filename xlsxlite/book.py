@@ -4,6 +4,8 @@ import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
 
+from xml.sax.saxutils import escape
+
 
 XML_HEADER = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"""
 WORKBOOK_HEADER = (
@@ -49,7 +51,7 @@ class XLSXSheet:
 
         row = "<row>"
         for column in columns:
-            row += f"<c t=\"inlineStr\"><is><t>{column}</t></is></c>"
+            row += f"<c t=\"inlineStr\"><is><t>{escape(column)}</t></is></c>"
         row += "</row>"
 
         self.file.write(row)
