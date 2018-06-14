@@ -1,24 +1,11 @@
-import os
 import pytest
 import pytz
-import random
-import shutil
-import string
-import time
 
 from datetime import datetime, timedelta
 from mock import patch
 from openpyxl.reader.excel import load_workbook
-from unittest import skip
 from xlsxlite.book import XLSXBook
-from .base import XLSXTest
-
-
-@pytest.fixture(scope="module")
-def tests_dir():
-    os.mkdir("_tests")
-    yield
-    shutil.rmtree("_tests")
+from .base import XLSXTest, tests_dir  # noqa
 
 
 @pytest.mark.usefixtures("tests_dir")
@@ -100,30 +87,3 @@ class BookTest(XLSXTest):
 
             with pytest.raises(ValueError):
                 sheet1.append_row('x')
-
-    @skip
-    def test_performance(self):
-        def random_val():
-            return ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
-
-        t0 = time.time()
-
-        book = XLSXBook()
-        sheet1 = book.add_sheet("Sheet1")
-        book.add_sheet("Sheet2")
-
-        t1 = time.time()
-        print(f"Initialized workbook in {t1 - t0} seconds")
-
-        num_rows = 1024 * 1024
-        for r in range(num_rows):
-            row = [random_val() for c in range(10)]
-            sheet1.append_row(*row)
-
-        t2 = time.time()
-        print(f"Wrote {num_rows} rows in {t2 - t1} seconds")
-
-        book.finalize(to_file="_tests/simple.xlsx")
-
-        t3 = time.time()
-        print(f"Finalized XLSX file in {t3 - t2} seconds")

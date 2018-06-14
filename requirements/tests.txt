@@ -1,6 +1,8 @@
 pytest
 pytest-cov
 pytz
+XlsxWriter
 openpyxl
+lxml
 mock
 flake8

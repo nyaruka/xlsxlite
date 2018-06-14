@@ -1,5 +1,15 @@
-from datetime import datetime, timedelta
+import os
+import pytest
+import shutil
 import unittest
+from datetime import datetime, timedelta
+
+
+@pytest.fixture
+def tests_dir():
+    os.mkdir("_tests")
+    yield
+    shutil.rmtree("_tests")
 
 
 class XLSXTest(unittest.TestCase):
