@@ -18,8 +18,8 @@ book.finalize(to_file="simple.xlsx")
 ## Benchmarks
 
 The [benchmarking test](https://github.com/nyaruka/xlsxlite/blob/master/xlsxlite/test/test_perf.py) writes
-rows with 10 cells of random string data to a single sheet workbook. The table below gives the times (lower is better)
-for different numbers of row, and includes [xlxswriter](https://xlsxwriter.readthedocs.io/) and
+rows with 10 cells of random string data to a single sheet workbook. The table below gives the times in seconds (lower is better)
+to write a spreadsheet with the given number of rows, and includes [xlxswriter](https://xlsxwriter.readthedocs.io/) and
 [openpyxl](https://openpyxl.readthedocs.io/) for comparison.
 
 Implementation  | 100,000 rows | 1,000,000 rows
