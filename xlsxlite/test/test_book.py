@@ -1,6 +1,8 @@
 import os
 import pytest
+import random
 import shutil
+import string
 import time
 
 from mock import patch
@@ -85,6 +87,9 @@ class BookTest(XLSXTest):
 
     @skip
     def test_performance(self):
+        def random_val():
+            return ''.join(random.choices(string.ascii_uppercase + string.digits, k=16))
+
         t0 = time.time()
 
         book = XLSXBook()
@@ -96,7 +101,7 @@ class BookTest(XLSXTest):
 
         num_rows = 1024 * 1024
         for r in range(num_rows):
-            row = ["foo"] * 10
+            row = [random_val() for c in range(10)]
             sheet1.append_row(*row)
 
         t2 = time.time()
