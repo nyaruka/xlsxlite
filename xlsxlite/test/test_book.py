@@ -1,8 +1,10 @@
 import os
 import shutil
+import time
 
 from mock import patch
 from openpyxl.reader.excel import load_workbook
+from unittest import skip
 from xlsxlite.book import XLSXBook
 from .base import XLSXTest
 
@@ -70,3 +72,27 @@ class BookTest(XLSXTest):
 
             with self.assertRaises(ValueError):
                 sheet1.append_row('x')
+
+    @skip
+    def test_performance(self):
+        t0 = time.time()
+
+        book = XLSXBook()
+        sheet1 = book.add_sheet("Sheet1")
+        book.add_sheet("Sheet2")
+
+        t1 = time.time()
+        print(f"Initialized workbook in {t1 - t0} seconds")
+
+        num_rows = 1024 * 1024
+        for r in range(num_rows):
+            row = ["foo"] * 10
+            sheet1.append_row(*row)
+
+        t2 = time.time()
+        print(f"Wrote {num_rows} rows in {t2 - t1} seconds")
+
+        book.finalize(to_file="_tests/simple.xlsx")
+
+        t3 = time.time()
+        print(f"Finalized XLSX file in {t3 - t2} seconds")

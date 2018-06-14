@@ -4,6 +4,7 @@ import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
 
+
 XML_HEADER = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"""
 WORKBOOK_HEADER = (
     """<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
@@ -46,15 +47,12 @@ class XLSXSheet:
         if self.num_rows >= self.MAX_ROWS:
             raise ValueError(f"sheet already has the maximum of {self.MAX_ROWS} rows")
 
-        row = ET.Element("row")
-
+        row = "<row>"
         for column in columns:
-            c = ET.SubElement(row, "c", {"t": "inlineStr"})
-            s = ET.SubElement(c, "is")
-            t = ET.SubElement(s, "t")
-            t.text = column
+            row += f"<c t=\"inlineStr\"><is><t>{column}</t></is></c>"
+        row += "</row>"
 
-        self.file.write(ET.tostring(row, encoding="unicode"))
+        self.file.write(row)
         self.num_rows += 1
 
     def finalize(self):

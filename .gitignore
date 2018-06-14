@@ -10,3 +10,4 @@ build/
 htmlcov/
 env/
 dist/
+xlsxlite.egg-info/

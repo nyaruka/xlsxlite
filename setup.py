@@ -1,11 +1,12 @@
+# Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+from os import path
 
-try:
-    from pypandoc import convert
-    read_md = lambda f: convert(f, 'rst')  # noqa
-except ImportError:
-    print("warning: pypandoc module not found, could not convert Markdown to RST")
-    read_md = lambda f: open(f, 'r').read()  # noqa
+here = path.abspath(path.dirname(__file__))
+
+# Get the long description from the README file
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 
 def _is_requirement(line):
@@ -25,10 +26,10 @@ setup(
     name='xlsxlite',
     version=__import__('xlsxlite').__version__,
     description='Lightweight XLSX writer with emphasis on minimizing memory usage.',
-    long_description=read_md('README.md'),
+    long_description=long_description,
+    long_description_content_type='text/markdown',
 
     classifiers=[
-        'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
@@ -38,10 +39,15 @@ setup(
     url='http://github.com/nyaruka/xlxslite',
     license='MIT',
 
-    maintainer='Nyaruka',
-    maintainer_email='code@nyaruka.com',
+    author='Nyaruka',
+    author_email='code@nyaruka.com',
 
     packages=find_packages(),
     install_requires=_read_requirements("requirements/base.txt"),
-    tests_require=_read_requirements("requirements/tests.txt")
+    tests_require=_read_requirements("requirements/tests.txt"),
+
+    project_urls={
+        'Bug Reports': 'https://github.com/nyaruka/xlsxlite/issues',
+        'Source': 'https://github.com/nyaruka/xlsxlite/',
+    },
 )
