@@ -1,6 +1,7 @@
 import os
 import shutil
 
+from mock import patch
 from openpyxl.reader.excel import load_workbook
 from xlsxlite.book import XLSXBook
 from .base import XLSXTest
@@ -45,3 +46,21 @@ class BookTest(XLSXTest):
 
         self.assertExcelSheet(sheet1, [("Name", "Email"), ("Jim", "jim@acme.com"), ("Bob", "bob@acme.com")])
         self.assertExcelSheet(sheet2, [()])
+
+    def test_sheet_limits(self):
+        book = XLSXBook()
+        sheet1 = book.add_sheet("Sheet1")
+
+        # try to add row with too many columns
+        column = ['x'] * 20000
+        with self.assertRaises(ValueError):
+            sheet1.append_row(*column)
+
+        # try to add more rows than allowed
+        with patch('xlsxlite.book.XLSXSheet.MAX_ROWS', 3):
+            sheet1.append_row('x')
+            sheet1.append_row('x')
+            sheet1.append_row('x')
+
+            with self.assertRaises(ValueError):
+                sheet1.append_row('x')

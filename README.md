@@ -6,6 +6,7 @@
 XLSXLite is a lightweight XLSX writer with emphasis on minimizing memory usage.
 
 ```python
+from xlsxlite.book import XLSXBook
 book = XLSXBook()
 sheet1 = book.add_sheet("People")
 sheet1.append_row("Name", "Email")

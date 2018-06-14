@@ -12,19 +12,24 @@ WORKSHEET_HEADER = (
     """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
 )
 
-# use a nice big I/O buffer for the worksheet files
-WORKSHEET_IO_BUFFER = 1024 * 1024
+# use a nice big 1MB I/O buffer for the worksheet files
+WORKSHEET_IO_BUFFER = 1048576
 
 
 class XLSXSheet:
     """
     A worksheet within a XLSX workbook
     """
+    MAX_ROWS = 1048576
+    MAX_COLS = 16384
+
     def __init__(self, _id, name, path):
         self.id = _id
         self.name = name
         self.path = path
         self.relationshipId = f"rId{_id}"
+
+        self.num_rows = 0
 
         self.file = open(path, "w", encoding="utf-8", buffering=WORKSHEET_IO_BUFFER)
         self.file.write(XML_HEADER)
@@ -35,6 +40,12 @@ class XLSXSheet:
         """
         Appends a new row to this sheet
         """
+        if len(columns) > self.MAX_COLS:
+            raise ValueError(f"rows can have a maximum of {self.MAX_COLS} columns")
+
+        if self.num_rows >= self.MAX_ROWS:
+            raise ValueError(f"sheet already has the maximum of {self.MAX_ROWS} rows")
+
         row = ET.Element("row")
 
         for column in columns:
@@ -44,6 +55,7 @@ class XLSXSheet:
             t.text = column
 
         self.file.write(ET.tostring(row, encoding="unicode"))
+        self.num_rows += 1
 
     def finalize(self):
         """
