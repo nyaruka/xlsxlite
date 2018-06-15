@@ -7,6 +7,8 @@ import zipfile
 from datetime import datetime
 from xml.sax.saxutils import escape
 
+from .utils import datetime_to_serial
+
 OOXML_STRICT = False
 XML_HEADER = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"""
 
@@ -68,7 +70,7 @@ class XLSXSheet:
             elif isinstance(val, (int, float)):
                 row += f"<c t=\"n\"><v>{str(val)}</v></c>"
             elif isinstance(val, datetime):
-                row += f"<c t=\"d\"><v>{val.isoformat()}</v></c>"
+                row += f"<c t=\"n\"><v>{datetime_to_serial(val)}</v></c>"
             else:
                 raise ValueError(f"Unsupported type in column data: {type(val)}")
 

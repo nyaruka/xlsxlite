@@ -46,7 +46,7 @@ class BookTest(XLSXTest):
         self.assertExcelSheet(sheet3, [()])
 
     def test_cell_types(self):
-        d1 = datetime(2018, 6, 14, 11, 26, 30, 0, pytz.UTC)
+        d1 = datetime(2013, 1, 1, 12, 0, 0)
 
         book = XLSXBook()
         sheet1 = book.add_sheet("Test")
@@ -59,7 +59,7 @@ class BookTest(XLSXTest):
         book.finalize(to_file="_tests/types.xlsx")
 
         book = load_workbook(filename="_tests/types.xlsx")
-        self.assertExcelSheet(book.worksheets[0], [("str", True, False, 3, 1.23, d1)], tz=pytz.UTC)
+        self.assertExcelSheet(book.worksheets[0], [("str", True, False, 3, 1.23, 41275.5)], tz=pytz.UTC)
 
     def test_escaping(self):
         book = XLSXBook()
