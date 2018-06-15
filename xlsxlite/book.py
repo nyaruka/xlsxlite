@@ -9,23 +9,52 @@ from xml.sax.saxutils import escape
 
 from .utils import datetime_to_serial
 
-OOXML_STRICT = False
 XML_HEADER = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"""
 
-if OOXML_STRICT:  # pragma: no cover
-    WORKBOOK_HEADER = (
-        """<workbook xmlns="http://purl.oclc.org/ooxml/spreadsheetml/main" xmlns:r="http://purl.oclc.org/ooxml/officeDocument/relationships">"""
-    )
-    WORKSHEET_HEADER = (
-        """<worksheet xmlns="http://purl.oclc.org/ooxml/spreadsheetml/main" xmlns:r="http://purl.oclc.org/ooxml/officeDocument/relationships">"""
-    )
-else:
-    WORKBOOK_HEADER = (
-        """<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
-    )
-    WORKSHEET_HEADER = (
-        """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
-    )
+WORKBOOK_HEADER = (
+    """<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
+)
+WORKSHEET_HEADER = (
+    """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
+)
+
+MINIMAL_STYLESHEET = """<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+    <numFmts count="1">
+        <numFmt formatCode="yyyy-mm-dd h:mm:ss" numFmtId="164"/>
+    </numFmts>
+    <fonts count="1">
+        <font>
+            <name val="Calibri"/>
+            <family val="2"/>
+            <color theme="1"/>
+            <sz val="11"/>
+            <scheme val="minor"/>
+        </font>
+    </fonts>
+    <fills count="2">
+        <fill><patternFill/></fill>
+        <fill><patternFill patternType="gray125"/></fill>
+    </fills>
+    <borders count="1">
+        <border>
+            <left/>
+            <right/>
+            <top/>
+            <bottom/>
+            <diagonal/>
+        </border>
+    </borders>
+    <cellStyleXfs count="1">
+        <xf borderId="0" fillId="0" fontId="0" numFmtId="0"/>
+    </cellStyleXfs>
+    <cellXfs count="2">
+        <xf borderId="0" fillId="0" fontId="0" numFmtId="0" pivotButton="0" quotePrefix="0" xfId="0"/>
+        <xf borderId="0" fillId="0" fontId="0" numFmtId="164" pivotButton="0" quotePrefix="0" xfId="0"/>
+    </cellXfs>
+    <cellStyles count="1">
+        <cellStyle builtinId="0" hidden="0" name="Normal" xfId="0"/>
+    </cellStyles>
+</styleSheet>"""
 
 # use a nice big 1MB I/O buffer for the worksheet files
 WORKSHEET_IO_BUFFER = 1048576
@@ -70,7 +99,7 @@ class XLSXSheet:
             elif isinstance(val, (int, float)):
                 row += f"<c t=\"n\"><v>{str(val)}</v></c>"
             elif isinstance(val, datetime):
-                row += f"<c t=\"n\"><v>{datetime_to_serial(val)}</v></c>"
+                row += f"<c t=\"n\" s=\"1\"><v>{datetime_to_serial(val)}</v></c>"
             else:
                 raise ValueError(f"Unsupported type in column data: {type(val)}")
 
@@ -121,6 +150,14 @@ class XLSXBook:
             {"Extension": "rels", "ContentType": "application/vnd.openxmlformats-package.relationships+xml"},
         )
         ET.SubElement(types, "Default", {"Extension": "xml", "ContentType": "application/xml"})
+        ET.SubElement(
+            types,
+            "Override",
+            {
+                "PartName": "/xl/styles.xml",
+                "ContentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml",
+            },
+        )
         ET.SubElement(
             types,
             "Override",
@@ -184,9 +221,31 @@ class XLSXBook:
                 },
             )
 
+        ET.SubElement(
+            relationships,
+            "Relationship",
+            {
+                "Id": "rIdStyles",
+                "Type": "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
+                "Target": "styles.xml",
+            },
+        )
+
         with open(os.path.join(self.app_dir, "_rels/workbook.xml.rels"), "w", encoding="utf-8") as f:
             f.write(XML_HEADER)
             f.write(ET.tostring(relationships, encoding="unicode"))
+
+    def _create_styles(self):
+        style_sheet = ET.Element("styleSheet", {"xmlns": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"})
+        # num_formats = ET.SubElement(style_sheet, "numFmts", {"count": 2})
+
+        cell_formats = ET.SubElement(style_sheet, "cellXfs", {"count": "1"})
+        ET.SubElement(cell_formats, "xf", {"numFmtId": "14", "applyNumberFormat": "1"})
+
+        with open(os.path.join(self.app_dir, "styles.xml"), "w", encoding="utf-8") as f:
+            f.write(XML_HEADER)
+            f.write(MINIMAL_STYLESHEET)
+            # f.write(ET.tostring(style_sheet, encoding="unicode"))
 
     def _create_workbook(self):
         sheets = ET.Element("sheets")
@@ -217,6 +276,7 @@ class XLSXBook:
         self._create_content_types()
         self._create_root_rels()
         self._create_app_rels()
+        self._create_styles()
         self._create_workbook()
 
         for sheet in self.sheets:

@@ -59,7 +59,7 @@ class BookTest(XLSXTest):
         book.finalize(to_file="_tests/types.xlsx")
 
         book = load_workbook(filename="_tests/types.xlsx")
-        self.assertExcelSheet(book.worksheets[0], [("str", True, False, 3, 1.23, 41275.5)], tz=pytz.UTC)
+        self.assertExcelSheet(book.worksheets[0], [("str", True, False, 3, 1.23, d1)])
 
     def test_escaping(self):
         book = XLSXBook()
