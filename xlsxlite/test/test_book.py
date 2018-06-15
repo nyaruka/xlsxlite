@@ -50,7 +50,7 @@ class BookTest(XLSXTest):
 
         book = XLSXBook()
         sheet1 = book.add_sheet("Test")
-        sheet1.append_row("str", 3, 1.23, d1)
+        sheet1.append_row("str", True, False, 3, 1.23, d1)
 
         # try to write a cell value with an unsupported type
         with pytest.raises(ValueError):
@@ -59,7 +59,7 @@ class BookTest(XLSXTest):
         book.finalize(to_file="_tests/types.xlsx")
 
         book = load_workbook(filename="_tests/types.xlsx")
-        self.assertExcelSheet(book.worksheets[0], [("str", 3, 1.23, d1)], tz=pytz.UTC)
+        self.assertExcelSheet(book.worksheets[0], [("str", True, False, 3, 1.23, d1)], tz=pytz.UTC)
 
     def test_escaping(self):
         book = XLSXBook()

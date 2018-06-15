@@ -7,14 +7,23 @@ import zipfile
 from datetime import datetime
 from xml.sax.saxutils import escape
 
-
+OOXML_STRICT = False
 XML_HEADER = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"""
-WORKBOOK_HEADER = (
-    """<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
-)
-WORKSHEET_HEADER = (
-    """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
-)
+
+if OOXML_STRICT:  # pragma: no cover
+    WORKBOOK_HEADER = (
+        """<workbook xmlns="http://purl.oclc.org/ooxml/spreadsheetml/main" xmlns:r="http://purl.oclc.org/ooxml/officeDocument/relationships">"""
+    )
+    WORKSHEET_HEADER = (
+        """<worksheet xmlns="http://purl.oclc.org/ooxml/spreadsheetml/main" xmlns:r="http://purl.oclc.org/ooxml/officeDocument/relationships">"""
+    )
+else:
+    WORKBOOK_HEADER = (
+        """<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
+    )
+    WORKSHEET_HEADER = (
+        """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
+    )
 
 # use a nice big 1MB I/O buffer for the worksheet files
 WORKSHEET_IO_BUFFER = 1048576
@@ -54,6 +63,8 @@ class XLSXSheet:
         for val in columns:
             if isinstance(val, str):
                 row += f"<c t=\"inlineStr\"><is><t>{escape(val)}</t></is></c>"
+            elif isinstance(val, bool):
+                row += f"<c t=\"b\"><v>{int(val)}</v></c>"
             elif isinstance(val, (int, float)):
                 row += f"<c t=\"n\"><v>{str(val)}</v></c>"
             elif isinstance(val, datetime):
