@@ -1,16 +1,16 @@
-import pytest
-import pytz
-
 from datetime import datetime, timedelta
+
+import pytest
 from mock import patch
 from openpyxl.reader.excel import load_workbook
+
 from xlsxlite.book import XLSXBook
+
 from .base import XLSXTest, tests_dir  # noqa
 
 
 @pytest.mark.usefixtures("tests_dir")
 class BookTest(XLSXTest):
-
     def test_empty(self):
         book = XLSXBook()
         book.finalize(to_file="_tests/empty.xlsx")
@@ -64,26 +64,26 @@ class BookTest(XLSXTest):
     def test_escaping(self):
         book = XLSXBook()
         sheet1 = book.add_sheet("Test")
-        sheet1.append_row("< & > \" ! =")
+        sheet1.append_row('< & > " ! =')
         book.finalize(to_file="_tests/escaped.xlsx")
 
         book = load_workbook(filename="_tests/escaped.xlsx")
-        self.assertExcelSheet(book.worksheets[0], [("< & > \" ! =",)])
+        self.assertExcelSheet(book.worksheets[0], [('< & > " ! =',)])
 
     def test_sheet_limits(self):
         book = XLSXBook()
         sheet1 = book.add_sheet("Sheet1")
 
         # try to add row with too many columns
-        column = ['x'] * 20000
+        column = ["x"] * 20000
         with pytest.raises(ValueError):
             sheet1.append_row(*column)
 
         # try to add more rows than allowed
-        with patch('xlsxlite.book.XLSXSheet.MAX_ROWS', 3):
-            sheet1.append_row('x')
-            sheet1.append_row('x')
-            sheet1.append_row('x')
+        with patch("xlsxlite.book.XLSXSheet.MAX_ROWS", 3):
+            sheet1.append_row("x")
+            sheet1.append_row("x")
+            sheet1.append_row("x")
 
             with pytest.raises(ValueError):
-                sheet1.append_row('x')
+                sheet1.append_row("x")

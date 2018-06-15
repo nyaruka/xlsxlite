@@ -15,7 +15,7 @@ NUM_ROWS = 1000
 NUM_COLS = 10
 
 # generate some random strings to use as cell values
-DATA = [''.join(random.choices(string.ascii_uppercase + string.digits, k=16)) for d in range(1000)]
+DATA = ["".join(random.choices(string.ascii_uppercase + string.digits, k=16)) for d in range(1000)]
 
 
 @pytest.mark.usefixtures("tests_dir")
@@ -32,7 +32,7 @@ def test_xlxslite():
 
 
 @pytest.mark.usefixtures("tests_dir")
-@patch('openpyxl.worksheet.write_only.write_cell')
+@patch("openpyxl.worksheet.write_only.write_cell")
 def test_openpyxl_etree(mock_write_cell):
     mock_write_cell.side_effect = etree_write_cell
 

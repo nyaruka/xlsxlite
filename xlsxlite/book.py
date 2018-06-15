@@ -3,7 +3,6 @@ import shutil
 import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
-
 from datetime import datetime
 from xml.sax.saxutils import escape
 
@@ -11,12 +10,8 @@ from .utils import datetime_to_serial
 
 XML_HEADER = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n"""
 
-WORKBOOK_HEADER = (
-    """<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
-)
-WORKSHEET_HEADER = (
-    """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
-)
+WORKBOOK_HEADER = """<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
+WORKSHEET_HEADER = """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">"""
 
 MINIMAL_STYLESHEET = """<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
     <numFmts count="1">
@@ -64,6 +59,7 @@ class XLSXSheet:
     """
     A worksheet within a XLSX workbook
     """
+
     MAX_ROWS = 1048576
     MAX_COLS = 16384
 
@@ -93,13 +89,13 @@ class XLSXSheet:
         row = "<row>"
         for val in columns:
             if isinstance(val, str):
-                row += f"<c t=\"inlineStr\"><is><t>{escape(val)}</t></is></c>"
+                row += f'<c t="inlineStr"><is><t>{escape(val)}</t></is></c>'
             elif isinstance(val, bool):
-                row += f"<c t=\"b\"><v>{int(val)}</v></c>"
+                row += f'<c t="b"><v>{int(val)}</v></c>'
             elif isinstance(val, (int, float)):
-                row += f"<c t=\"n\"><v>{str(val)}</v></c>"
+                row += f'<c t="n"><v>{str(val)}</v></c>'
             elif isinstance(val, datetime):
-                row += f"<c t=\"n\" s=\"1\"><v>{datetime_to_serial(val)}</v></c>"
+                row += f'<c t="n" s="1"><v>{datetime_to_serial(val)}</v></c>'
             else:
                 raise ValueError(f"Unsupported type in column data: {type(val)}")
 
@@ -120,6 +116,7 @@ class XLSXBook:
     """
     An XLSX workbook
     """
+
     def __init__(self):
         self.base_dir = tempfile.mkdtemp()
         self.app_dir = os.path.join(self.base_dir, "xl")
@@ -236,16 +233,9 @@ class XLSXBook:
             f.write(ET.tostring(relationships, encoding="unicode"))
 
     def _create_styles(self):
-        style_sheet = ET.Element("styleSheet", {"xmlns": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"})
-        # num_formats = ET.SubElement(style_sheet, "numFmts", {"count": 2})
-
-        cell_formats = ET.SubElement(style_sheet, "cellXfs", {"count": "1"})
-        ET.SubElement(cell_formats, "xf", {"numFmtId": "14", "applyNumberFormat": "1"})
-
         with open(os.path.join(self.app_dir, "styles.xml"), "w", encoding="utf-8") as f:
             f.write(XML_HEADER)
             f.write(MINIMAL_STYLESHEET)
-            # f.write(ET.tostring(style_sheet, encoding="unicode"))
 
     def _create_workbook(self):
         sheets = ET.Element("sheets")

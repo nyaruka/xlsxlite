@@ -1,7 +1,8 @@
+from datetime import datetime
+
 import pytest
 import pytz
 
-from datetime import datetime
 from xlsxlite.utils import datetime_to_serial
 
 

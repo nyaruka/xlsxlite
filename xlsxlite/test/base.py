@@ -13,7 +13,6 @@ def tests_dir():
 
 
 class XLSXTest(unittest.TestCase):
-
     def assertExcelRow(self, sheet, row_num, values, tz=None):
         """
         Asserts the cell values in the given worksheet row. Date values are converted using the provided timezone.
