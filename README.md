@@ -7,7 +7,7 @@
 This is a lightweight XLSX writer with emphasis on minimizing memory usage. It's also really fast.
 
 ```python
-from xlsxlite.book import XLSXBook
+from xlsxlite.writer import XLSXBook
 book = XLSXBook()
 sheet1 = book.add_sheet("People")
 sheet1.append_row("Name", "Email", "Age")
@@ -35,7 +35,7 @@ This library is for projects which need to generate large spreadsheets, quickly,
 so it intentionally only supports a tiny subset of SpreadsheetML specification:
 
  * No styling or themes
- * Only strings, numbers and dates are supported cell types
+ * Only strings, numbers, booleans and dates are supported cell types
 
 If you need to do anything fancier then take a look at [xlxswriter](https://xlsxwriter.readthedocs.io/) and
 [openpyxl](https://openpyxl.readthedocs.io/).

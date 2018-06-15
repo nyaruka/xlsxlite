@@ -7,7 +7,7 @@ from mock import patch
 from openpyxl import Workbook
 from openpyxl.worksheet.write_only import WriteOnlyCell
 from openpyxl.writer.etree_worksheet import etree_write_cell
-from xlsxlite.book import XLSXBook
+from xlsxlite.writer import XLSXBook
 from .base import tests_dir  # noqa
 
 

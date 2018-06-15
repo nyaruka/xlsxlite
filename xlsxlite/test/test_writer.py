@@ -4,7 +4,7 @@ import pytest
 from mock import patch
 from openpyxl.reader.excel import load_workbook
 
-from xlsxlite.book import XLSXBook
+from xlsxlite.writer import XLSXBook
 
 from .base import XLSXTest, tests_dir  # noqa
 
@@ -80,7 +80,7 @@ class BookTest(XLSXTest):
             sheet1.append_row(*column)
 
         # try to add more rows than allowed
-        with patch("xlsxlite.book.XLSXSheet.MAX_ROWS", 3):
+        with patch("xlsxlite.writer.XLSXSheet.MAX_ROWS", 3):
             sheet1.append_row("x")
             sheet1.append_row("x")
             sheet1.append_row("x")
