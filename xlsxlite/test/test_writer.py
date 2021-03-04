@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta
 
 import pytest
-from mock import patch
 from openpyxl.reader.excel import load_workbook
-
+from unittest.mock import patch
 from xlsxlite.writer import XLSXBook
 
 from .base import XLSXTest, tests_dir  # noqa
