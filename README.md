@@ -1,7 +1,7 @@
 # XLSXLite
 
-[![Build Status](https://travis-ci.org/nyaruka/xlsxlite.svg?branch=master)](https://travis-ci.org/nyaruka/xlsxlite)
-[![Coverage Status](https://coveralls.io/repos/github/nyaruka/xlsxlite/badge.svg?branch=master)](https://coveralls.io/github/nyaruka/xlsxlite?branch=master)
+[![Build Status](https://github.com/nyaruka/xlsxlite/workflows/CI/badge.svg)](https://github.com/nyaruka/xlsxlite/actions?query=workflow%3ACI)
+[![Coverage Status](https://codecov.io/gh/nyaruka/xlsxlite/branch/main/graph/badge.svg)](https://codecov.io/gh/nyaruka/xlsxlite)
 [![PyPI Release](https://img.shields.io/pypi/v/xlsxlite.svg)](https://pypi.python.org/pypi/xlsxlite/)
 
 This is a lightweight XLSX writer with emphasis on minimizing memory usage. It's also really fast.
@@ -17,7 +17,7 @@ book.finalize(to_file="simple.xlsx")
 
 ## Benchmarks
 
-The [benchmarking test](https://github.com/nyaruka/xlsxlite/blob/master/xlsxlite/test/test_perf.py) writes
+The [benchmarking test](https://github.com/nyaruka/xlsxlite/blob/main/xlsxlite/test/test_perf.py) writes
 rows with 10 cells of random string data to a single sheet workbook. The table below gives the times in seconds (lower is better)
 to write a spreadsheet with the given number of rows, and includes [xlxswriter](https://xlsxwriter.readthedocs.io/) and
 [openpyxl](https://openpyxl.readthedocs.io/) for comparison.
@@ -45,5 +45,5 @@ If you need to do anything fancier then take a look at [xlxswriter](https://xlsx
 To run all tests:
 
 ```
-py.test xlsxlite -s
+poetry run py.test xlsxlite -s
 ```
