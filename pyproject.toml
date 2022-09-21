@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "xlsxlite"
 version = "0.2.0"
-description = "Lightweight XLSX writer with emphasis on minimizing memory usage"
-authors = ["Nyaruka <code@nyaruka.com>"]
+description = "Lightweight XLSX writer with emphasis on minimizing memory usage."
+authors = ["TextIt <code@textit.com>"]
 license = "MIT"
 classifiers=[
     'Intended Audience :: Developers',
@@ -15,7 +15,7 @@ classifiers=[
 repository = "http://github.com/nyaruka/xlsxlite"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
