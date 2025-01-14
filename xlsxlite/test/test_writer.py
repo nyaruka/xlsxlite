@@ -40,9 +40,9 @@ class BookTest(XLSXTest):
         assert sheet2.title == "People"
         assert sheet3.title == "Empty"
 
-        self.assertExcelSheet(sheet1, [()])
+        self.assertExcelSheet(sheet1, [])
         self.assertExcelSheet(sheet2, [("Name", "Email"), ("Jim", "jim@acme.com"), ("Bob", "bob@acme.com")])
-        self.assertExcelSheet(sheet3, [()])
+        self.assertExcelSheet(sheet3, [])
 
     def test_cell_types(self):
         d1 = datetime(2013, 1, 1, 12, 0, 0)

@@ -1,8 +1,10 @@
-[tool.poetry]
+[project]
 name = "xlsxlite"
 version = "0.2.0"
 description = "Lightweight XLSX writer with emphasis on minimizing memory usage."
-authors = ["TextIt <code@textit.com>"]
+authors = [
+    {"name" = "TextIt", "email" = "code@textit.com"}
+]
 license = "MIT"
 classifiers=[
     'Intended Audience :: Developers',
@@ -10,22 +12,21 @@ classifiers=[
     'Operating System :: OS Independent',
     'Programming Language :: Python',
 ]
+requires-python = ">=3.10"
+dependencies = []
 
 [tool.poetry.urls]
 repository = "http://github.com/nyaruka/xlsxlite"
 
-[tool.poetry.dependencies]
-python = "^3.7"
-
-[tool.poetry.dev-dependencies]
-pytest = "^6.2.2"
-pytest-cov = "^2.11.1"
-pytz = "^2021.1"
-XlsxWriter = "^1.3.7"
-openpyxl = "2.5.14"
-lxml = "^4.9.1"
-flake8 = "^3.8.4"
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+pytz = "^2024.2"
+XlsxWriter = "^3.2.0"
+openpyxl = "3.1.5"
+lxml = "^5.3.0"
+flake8 = "^7.1.1"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"

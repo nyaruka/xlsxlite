@@ -4,8 +4,8 @@ import string
 import xlsxwriter
 
 from openpyxl import Workbook
-from openpyxl.worksheet.write_only import WriteOnlyCell
-from openpyxl.writer.etree_worksheet import etree_write_cell
+from openpyxl.cell.cell import WriteOnlyCell
+from openpyxl.cell._writer import etree_write_cell
 from unittest.mock import patch
 from xlsxlite.writer import XLSXBook
 from .base import tests_dir  # noqa
@@ -32,7 +32,7 @@ def test_xlxslite():
 
 
 @pytest.mark.usefixtures("tests_dir")
-@patch("openpyxl.worksheet.write_only.write_cell")
+@patch("openpyxl.cell._writer.write_cell")
 def test_openpyxl_etree(mock_write_cell):
     mock_write_cell.side_effect = etree_write_cell
 
