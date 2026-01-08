@@ -1,6 +1,6 @@
 [project]
 name = "xlsxlite"
-version = "1.0.0"
+version = "1.1.0"
 description = "Lightweight XLSX writer with emphasis on minimizing memory usage."
 authors = [
     {name = "TextIt", email = "code@textit.com"}
