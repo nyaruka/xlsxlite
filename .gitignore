@@ -1,6 +1,7 @@
 *.pyc
 .cache
 .coverage
+coverage.xml
 .project
 .pydevproject
 .DS_Store

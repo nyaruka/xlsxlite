@@ -45,5 +45,5 @@ If you need to do anything fancier then take a look at [xlxswriter](https://xlsx
 To run all tests:
 
 ```
-poetry run py.test xlsxlite -s
+uv run pytest xlsxlite -s
 ```
