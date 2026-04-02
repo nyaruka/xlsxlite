@@ -27,8 +27,20 @@ dev = [
     "xlsxwriter>=3.2.0",
     "openpyxl==3.1.5",
     "lxml>=5.3.0",
-    "flake8>=7.1.1",
+    "ruff>=0.14.0",
 ]
+
+[tool.ruff]
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E741", "E501", "F405"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["xlsxlite"]
 
 [build-system]
 requires = ["hatchling"]

@@ -23,9 +23,13 @@ jobs:
       run: |
         uv sync --group dev
 
+    - name: Run ruff
+      run: |
+        uv run ruff format --check xlsxlite/
+        uv run ruff check xlsxlite/
+
     - name: Run tests
       run: |
-        uv run flake8 xlsxlite/
         uv run pytest --cov-report=xml --cov=xlsxlite xlsxlite
 
     - name: Upload coverage

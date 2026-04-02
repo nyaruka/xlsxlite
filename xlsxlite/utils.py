@@ -11,4 +11,4 @@ def datetime_to_serial(dt):
     temp = datetime(1899, 12, 30)
     delta = dt - temp
 
-    return delta.days + (float(delta.seconds) + float(delta.microseconds) / 1E6) / (60 * 60 * 24)
+    return delta.days + (float(delta.seconds) + float(delta.microseconds) / 1e6) / (60 * 60 * 24)
