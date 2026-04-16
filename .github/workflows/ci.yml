@@ -33,10 +33,12 @@ jobs:
         uv run pytest --cov-report=xml --cov=xlsxlite xlsxlite
 
     - name: Upload coverage
-      if: success()
+      if: success() && env.CODECOV_TOKEN != ''
       uses: codecov/codecov-action@v5
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+        token: ${{ env.CODECOV_TOKEN }}
         fail_ci_if_error: true
 
   release:
