@@ -1,7 +1,6 @@
 # XLSXLite
 
 [![Build Status](https://github.com/nyaruka/xlsxlite/workflows/CI/badge.svg)](https://github.com/nyaruka/xlsxlite/actions?query=workflow%3ACI)
-[![Coverage Status](https://codecov.io/gh/nyaruka/xlsxlite/branch/main/graph/badge.svg)](https://codecov.io/gh/nyaruka/xlsxlite)
 [![PyPI Release](https://img.shields.io/pypi/v/xlsxlite.svg)](https://pypi.python.org/pypi/xlsxlite/)
 
 This is a lightweight XLSX writer with emphasis on minimizing memory usage. It's also really fast.
